@@ -208,7 +208,10 @@ int main (void)
 	// Launch CUDA kernel to initialize velocity field
 	const dim3 blockSize(TX, TY, TZ);
 	const dim3 gridSize(divUp(NX, TX), divUp(NY, TY), divUp(NZ, TZ));
-	
+
+	int count;
+	for (count = 0; count < 11; ++count){
+
 	initialize<<<gridSize, blockSize>>>(u, dudx_exact);
 	
 	// Setup wavespace domain
@@ -221,6 +224,8 @@ int main (void)
 
 	// takeFFT(plan, invplan, u, u_fft);
 	cudaDeviceSynchronize();
+
+	}
 
 	printf("Using the GPU %s. The number of elements in the array is %2d.\n",prop.name,NX*NY*NZ);
 	printf("Displaying 50 results:\n");
@@ -236,9 +241,9 @@ int main (void)
 	}
 
 	// Write output data to file (for additional analysis if desired)
-	// writeData("dudx",dudx, NX*NY*NZ);
-	// writeData("dudx_exact", dudx_exact, NX*NY*NZ);
-	// writeData("u", u, NX*NY*NZ);
+	writeData("dudx",dudx, NX*NY*NZ);
+	writeData("dudx_exact", dudx_exact, NX*NY*NZ);
+	writeData("u", u, NX*NY*NZ);
 
 	//Clean variables
 	cufftDestroy(plan);
